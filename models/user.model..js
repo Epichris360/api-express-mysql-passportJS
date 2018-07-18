@@ -1,0 +1,56 @@
+'use strict';
+
+const bcrypt   = require('bcrypt');
+const bcrypt_p = require('bcrypt-promise');
+const jwt      = require('jsonwebtoken');
+const {TE, to} = require('../service/util.service');
+const CONFIG   = require('../config/config');
+
+module.exports = (sequilize, DataTypes) => {
+  //table/model definitions
+  var Model = sequilize.define('User', {
+    first: DataTypes.STRING,
+    last:  DataTypes.STRING,
+    email: {type: DataTypes.STRING, allowNull: true, unique: true, validate:{isEmail: {msg:"Phone number invalid."}}},
+    phone: {type: DataTypes.STRING, allowNull: true, unique: true,
+    validate:{len: {args:[7,20], msg:"Phone number invalid, too short."}, isNumeric:{msg: "not a valid phone number"}}},
+    password: DataTypes.STRING,
+  });
+  // Relations
+  Model.associate = function(models){
+    this.Companies = this.belongsToMany(models.Company, {through: 'UserCompany'});
+  };
+  // hash password, on password save or update
+  Model.beforeSave(async (user, options) => {
+    let err;
+      if(user.changed('password')){
+        let salt, hash;
+        [err, salt] = await to(bcrypt.genSalt(10));
+        if(err) TE(err.message, true)
+
+        [err, hash] = await to(bcrypt.hash(user.password, salt));
+        if(er) TE(err.message, true);
+
+        user.password = hash;
+      }
+    });
+
+    Model.prototype.comparePassword = async function(pw){
+      let err, pass;
+      if(!this.password) TE('password not set');
+
+      [err, pass] = await to(bcrypt_p.compare(pw, this.password));
+      if(err) TE(err);
+
+      if(!pass) TE('invalid password');
+
+      return this;
+    }
+
+    Model.prototype.getJWT = function(){
+      let expiration_time = parseInt(CONFIG.jwt_expiration);
+      return "Bearer " + jwt.sign({user_id:this.id}, CONFIG.jwt_encryption, {expires_in: expiration_time});
+    }
+
+    return Model;
+}
