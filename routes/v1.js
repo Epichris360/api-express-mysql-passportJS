@@ -10,6 +10,8 @@ const custom = require('./../middleware/custom');
 const passport = require('passport');
 const path     = require('path');
 
+require('./../middleware/passport')(passport)
+
 //================================
 // User routes====================
 //================================

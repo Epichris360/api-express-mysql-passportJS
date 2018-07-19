@@ -50,7 +50,7 @@ app.use((req, res, next) => {
   err.status = 404;
   next(err)
 });
-
+/*
 // error handler
 app.use((err, req, res, next) => {
   //  set locals, only providing error in development
@@ -59,9 +59,11 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error')
+  res.render('error');
+  console.log('err.message: ',err.message);
+  next();
 });
-
+*/
 module.exports = app;
 
 process.on('unhandledRejection', error => {

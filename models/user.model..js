@@ -53,8 +53,10 @@ module.exports = (sequilize, DataTypes) => {
     }
 
     Model.prototype.toWeb = function(pw){
-      let json = this.toJSON();
-      return json;
+      // deleting password from the payload that gets sent back
+      let user = Object.assign({},this.dataValues);
+      delete user.password;
+      return user;
     };
 
     return Model;

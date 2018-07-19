@@ -4,8 +4,7 @@ const { to, ReE, ReS } = require('../services/util.service');
 
 const create = async function(req, res){
   res.setHeader('Content-Type', 'application/json');
-  const body = req.body;
-  console.log('body: ', body);
+  const body = req.body; 
   if(!body.unique_key && !body.email && !body.phone){
     return ReE(res, 'Please enter an email or phone number to register.');
   }else if(!body.password){
@@ -66,4 +65,5 @@ const login = async function(req, res){
 
   return ReS(res, {token: user.getJWT(), user: user.toWeb()});
 }
+
 module.exports.login = login;
