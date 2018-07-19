@@ -5,9 +5,11 @@ const { to, TE } = require('../services/util.service');
 // this is so they can send in 3 options unique_key, email, or phone and it will work
 const getUniqueKeyFromBody = function(body){
   let unique_key = body.unique_key;
+
   if(typeof unique_key === 'undefined' ){
     if(typeof body.email != 'undefined'){
       unique_key = body.email;
+
     }else if(typeof body.phone != 'undefined'){
       unique_key = body.phone;
     }else{
@@ -29,9 +31,10 @@ const createUser = async function(userInfo){
 
   if(validator.isEmail(unique_key)){
     auth_info.method = 'email';
-    userInfo.email   = unique;
+    userInfo.email   = unique_key;
 
     [err, user] = await to(User.create(userInfo));
+    console.log('createUser: err: ',err);
     if(err) TE('User already exists with that email');
 
     return user;

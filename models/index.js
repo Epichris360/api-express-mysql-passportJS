@@ -2,9 +2,10 @@
 
 let fs        = require('fs');
 let path      = require('path');
-let Sequalize = require('sequalize');
+let Sequalize = require('sequelize');
 let basename  = path.basename(__filename);
 let db        = {};
+const CONFIG  = require('../config/config');
 
 //connect to sequelize using env variables
 const sequalize = new Sequalize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_password,{
@@ -17,7 +18,7 @@ const sequalize = new Sequalize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_passwo
 fs.readdirSync(__dirname).filter(file => {
   return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) == '.js');
 }).forEach(file => {
-  let model = sequilize['import'](path.join(__dirname, file));
+  let model = sequalize['import'](path.join(__dirname, file));
   db[model.name] = model;
 });
 

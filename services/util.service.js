@@ -1,12 +1,12 @@
-const { to } = require('await-to-js');
-const pe     = require('parse-error');
+const {to} = require('await-to-js');
+const pe = require('parse-error');
 
-module.exports.to = async(promise) => {
-  let err, res;
-  [err, res] = await to(promise);
-  if(err) return [pe(err)];
+module.exports.to = async (promise) => {
+    let err, res;
+    [err, res] = await to(promise);
+    if(err) return [pe(err)];
 
-  return [null, res]
+    return [null, res];
 };
 
 module.exports.ReE = function(res, err, code){ //Error Web Response
